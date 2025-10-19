@@ -1,12 +1,12 @@
 services:
-  portfolio-api:
+  api:
     build:
       context: ./backend # ← 変更：. から ./backend に
       args:
         INSTALL_DEV: "true"
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     ports:
-      - "8001:8000"  # ポートフォリオ用に8001に変更
+      - "8000:8000"
     volumes:
       - ./backend:/app:cached
       # venv はホストと分離（匿名ボリューム）
@@ -20,7 +20,7 @@ services:
     # ホストと同一 UID/GID で実行して権限不整合を回避
     user: "${UID:-1000}:${GID:-1000}"
     depends_on:
-      portfolio-redis:
+      redis:
         condition: service_healthy
     stdin_open: true
     tty: true
@@ -31,32 +31,32 @@ services:
     #   retries: 3
     #   start_period: 40s
 
-  portfolio-redis:
+  redis:
     image: redis:7-alpine
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-portfolio_password}
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-devpassword}
     ports:
-      - "127.0.0.1:6380:6379"  # ポートフォリオ用に6380に変更
+      - "127.0.0.1:6379:6379"
     volumes:
-      - portfolio-redis-data:/data
+      - redis-data:/data
     environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-portfolio_password}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-devpassword}
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-portfolio_password}", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-devpassword}", "ping"]
       interval: 5s
       timeout: 3s
       retries: 20
 
-  portfolio-redis-commander:
+  redis-commander:
     image: rediscommander/redis-commander:latest
     environment:
-      - REDIS_HOSTS=local:portfolio-redis:6379:0:${REDIS_PASSWORD:-portfolio_password}
+      - REDIS_HOSTS=local:redis:6379:0:${REDIS_PASSWORD:-devpassword}
     ports:
-      - "8082:8081"  # ポートフォリオ用に8082に変更
+      - "8081:8081"
     depends_on:
-      portfolio-redis:
+      redis:
         condition: service_healthy
 
 volumes:
-  portfolio-vectorstore:
-  portfolio-uploads:
-  portfolio-redis-data:
+  vectorstore:
+  uploads:
+  redis-data:

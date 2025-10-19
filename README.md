@@ -1,8 +1,3 @@
-# tuukaa Portfolio - 転職活動用ポートフォリオ
-
-このリポジトリは、転職活動用のポートフォリオとして作成されたtuukaaプロジェクトの分離版です。
-プロダクト版とは完全に独立した環境で動作するよう設定されています。
-
 ## クイックスタート
 
 ### 1. 環境設定
@@ -10,15 +5,14 @@
 ```bash
 # プロジェクトのクローン
 git clone <repository-url>
-cd tuukaa-portfolio
+cd tuukaa
 
-# 環境変数の設定（ポートフォリオ用の最小構成）
+# 環境変数の設定（開発環境用の最小構成）
 cat > .env << EOF
 OPENAI_API_KEY=your_actual_api_key_here
-NEXT_PUBLIC_API_URL=http://localhost:8001
-NEXT_PUBLIC_APP_NAME=tuukaa-portfolio
+NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_APP_NAME=tuukaa
 DEBUG=true
-REDIS_PASSWORD=portfolio_password
 EOF
 ```
 
@@ -43,9 +37,8 @@ docker-compose up -d --build
 ### 3. 動作確認
 
 - **メインアプリ**: http://localhost:3000（Next.js フロントエンド）
-- **API 文書**: http://localhost:8001/docs（FastAPI Swagger）
-- **ヘルスチェック**: http://localhost:8001/health（バックエンド状態）
-- **Redis Commander**: http://localhost:8082（Redis管理画面）
+- **API 文書**: http://localhost:8000/docs（FastAPI Swagger）
+- **ヘルスチェック**: http://localhost:8000/health（バックエンド状態）
 
 ## 使用方法（各フェーズの比較）
 
@@ -59,11 +52,11 @@ docker-compose up -d --build
 ### フェーズ 2（REST API）
 
 ```bash
-# curlコマンドによるAPI操作（ポートフォリオ版）
-curl -X POST "http://localhost:8001/api/v1/pdf/upload" \
+# curlコマンドによるAPI操作（現行ルート）
+curl -X POST "http://localhost:8000/api/v1/pdf/upload" \
   -F "file=@document.pdf"
 
-curl -X POST "http://localhost:8001/api/v1/pdf/ask" \
+curl -X POST "http://localhost:8000/api/v1/pdf/ask" \
   -H "Content-Type: application/json" \
   -d '{"question": "命名規則は？"}'
 ```
@@ -71,7 +64,7 @@ curl -X POST "http://localhost:8001/api/v1/pdf/ask" \
 ### フェーズ 3（Web アプリケーション）
 
 ```bash
-# モダンなWebブラウザUI（ポートフォリオ版）
+# モダンなWebブラウザUI
 # http://localhost:3000
 # - ファイルドラッグ&ドロップ
 # - リアルタイム検索
@@ -258,7 +251,7 @@ docker-compose -f docker-compose.prod.yml up --build
 ## プロジェクト構造
 
 ```
-tuukaa-portfolio/
+tuukaa/
 ├── frontend/ # Next.jsフロントエンド
 │ ├── src/
 │ │ ├── app/ # App Router
@@ -271,7 +264,7 @@ tuukaa-portfolio/
 │ │ ├── core/ # コアロジック（RAG等）
 │ │ └── models/ # データモデル
 │ └── pyproject.toml
-├── docker-compose.yml # マルチサービス構成（ポートフォリオ用）
+├── docker-compose.yml # マルチサービス構成
 └── README.md # このファイル
 ```
 
@@ -335,25 +328,25 @@ EMBED_ALLOWED_ORIGINS=*
 コンテナ起動後に以下を実行：
 
 ```bash
-# 1) ヘルス・システム情報（ポートフォリオ版）
-curl -s http://localhost:8001/health
-curl -s http://localhost:8001/api/v1/pdf/system/info
+# 1) ヘルス・システム情報
+curl -s http://localhost:8000/health
+curl -s http://localhost:8000/api/v1/pdf/system/info
 
 # 2) PDF アップロード
-curl -s -X POST "http://localhost:8001/api/v1/pdf/upload" \
+curl -s -X POST "http://localhost:8000/api/v1/pdf/upload" \
   -F "file=@./sample.pdf"
 
 # 3) 検索・質問
-curl -s -X POST "http://localhost:8001/api/v1/pdf/search" \
+curl -s -X POST "http://localhost:8000/api/v1/pdf/search" \
   -H "Content-Type: application/json" \
   -d '{"question":"テスト","top_k":1}'
-curl -s -X POST "http://localhost:8001/api/v1/pdf/ask" \
+curl -s -X POST "http://localhost:8000/api/v1/pdf/ask" \
   -H "Content-Type: application/json" \
   -d '{"question":"このPDFの概要は？","top_k":1}'
 
 # 4) LP/Embed（疎通）
-curl -s http://localhost:8001/api/v1/lp/
-curl -s http://localhost:8001/api/v1/embed/
+curl -s http://localhost:8000/api/v1/lp/
+curl -s http://localhost:8000/api/v1/embed/
 ```
 
 期待値：すべて 200、LP/Embed は `{ "status": "ok" }`。
@@ -386,8 +379,8 @@ npm install
 #### バックエンド API に接続できない
 
 ```bash
-# バックエンドサービス状態確認（ポートフォリオ版）
-curl http://localhost:8001/health
+# バックエンドサービス状態確認
+curl http://localhost:8000/health
 
 # 環境変数確認
 echo $OPENAI_API_KEY
@@ -396,9 +389,9 @@ echo $OPENAI_API_KEY
 #### ChromaDB エラー
 
 ```bash
-# ベクトルストアのリセット（ポートフォリオ版）
+# ベクトルストアのリセット
 docker-compose down
-docker volume rm tuukaa-portfolio_portfolio-vectorstore
+docker volume rm tuukaa_vectorstore
 docker-compose up --build
 ```
 
