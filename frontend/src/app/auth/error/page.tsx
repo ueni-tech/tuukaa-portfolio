@@ -1,10 +1,11 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { AlertCircle } from 'lucide-react'
 
-export default function AuthError() {
+function AuthErrorContent() {
   const searchParams = useSearchParams()
   const error = searchParams.get('error')
 
@@ -28,5 +29,23 @@ export default function AuthError() {
         </a>
       </Card>
     </div>
+  )
+}
+
+export default function AuthError() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <Card className="p-8 max-w-md">
+          <div className="flex items-center gap-3 mb-4">
+            <AlertCircle className="h-8 w-8 text-red-500" />
+            <h1 className="text-2xl font-bold">アクセス拒否</h1>
+          </div>
+          <p className="text-muted-foreground mb-4">読み込み中...</p>
+        </Card>
+      </div>
+    }>
+      <AuthErrorContent />
+    </Suspense>
   )
 }
