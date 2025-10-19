@@ -1,0 +1,62 @@
+services:
+  api:
+    build:
+      context: ./backend # ← 変更：. から ./backend に
+      args:
+        INSTALL_DEV: "true"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app:cached
+      # venv はホストと分離（匿名ボリューム）
+      - /app/.venv
+      - ./backend/vectorstore:/app/vectorstore # バインドマウントに変更
+      - ./backend/uploads:/app/uploads # バインドマウントに変更
+    env_file:
+      - ./.env
+    environment:
+      - PYTHONPATH=/app
+    # ホストと同一 UID/GID で実行して権限不整合を回避
+    user: "${UID:-1000}:${GID:-1000}"
+    depends_on:
+      redis:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 40s
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-devpassword}
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis-data:/data
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-devpassword}
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-devpassword}", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379:0:${REDIS_PASSWORD:-devpassword}
+    ports:
+      - "8081:8081"
+    depends_on:
+      redis:
+        condition: service_healthy
+
+volumes:
+  vectorstore:
+  uploads:
+  redis-data:
