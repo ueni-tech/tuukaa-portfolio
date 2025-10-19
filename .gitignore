@@ -178,3 +178,5 @@ backend/build/
 *.log
 .env
 .env.local
+
+/docs

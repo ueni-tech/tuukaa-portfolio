@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "tuukaa-api"
+name = "tuukaa-portfolio-api"
 version = "0.1.0"
-description = "tuukaa API - RAGベースのQ&Aシステム"
+description = "tuukaa Portfolio API - RAGベースのQ&Aシステム（ポートフォリオ版）"
 authors = ["Your Name <your.email@example.com>"]
 readme = "README.md"
 
