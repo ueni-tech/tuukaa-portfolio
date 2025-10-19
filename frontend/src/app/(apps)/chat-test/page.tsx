@@ -138,7 +138,7 @@ export default function ChatPage() {
     'gpt-4o-mini',
   ] as const
   type Model = (typeof MODELS)[number]
-  const DEFAULT_MODEL: Model = 'gpt-5-mini'
+  const DEFAULT_MODEL: Model = 'gpt-4o-mini'
   const mounted = useRef(false)
   const [model, setModel] = useState<Model>(() => {
     // 初期化時にlocalStorageから読み込む
