@@ -34,6 +34,7 @@ import {
   buildEvidenceReportEmail,
   EvidenceSummary,
 } from '@/lib/buildClientReportEmail'
+import { useSession } from 'next-auth/react'
 
 type TenantInfo = { name: string; key: string }
 type FileInfo = {
@@ -45,6 +46,8 @@ type FileInfo = {
 }
 
 export default function EmbedAdminApp() {
+  const { data: session } = useSession()
+  const isPortfolioAccount = session?.user?.role === 'portfolio'
   const [tenants, setTenants] = useState<TenantInfo[]>([])
   const [selectedTenant, setSelectedTenant] = useState<string>('')
   const [selectedKey, setSelectedKey] = useState<string>('')
@@ -137,6 +140,10 @@ export default function EmbedAdminApp() {
   }
 
   const onCopyKey = async () => {
+    if (isPortfolioAccount) {
+      toast.error('ポートフォリオアカウントではその機能は制限されています')
+      return
+    }
     try {
       await navigator.clipboard.writeText(selectedKey || '')
       toast.success('埋め込みキーをコピーしました')
@@ -146,6 +153,10 @@ export default function EmbedAdminApp() {
   }
 
   const onGenerateKey = () => {
+    if (isPortfolioAccount) {
+      toast.error('ポートフォリオアカウントではその機能は制限されています')
+      return
+    }
     try {
       const key =
         typeof crypto !== 'undefined' && 'randomUUID' in crypto
@@ -159,6 +170,10 @@ export default function EmbedAdminApp() {
   }
 
   const onCopyGeneratedKey = async () => {
+    if (isPortfolioAccount) {
+      toast.error('ポートフォリオアカウントではその機能は制限されています')
+      return
+    }
     try {
       if (!generatedKey) {
         toast.error('まずはキーを生成してください')
@@ -174,6 +189,10 @@ export default function EmbedAdminApp() {
   }
 
   const onUpload = async () => {
+    if (isPortfolioAccount) {
+      toast.error('ポートフォリオアカウントではその機能は制限されています')
+      return
+    }
     if (!selectedTenant || !selectedKey) {
       toast.error('テナントを選択してください')
       return
@@ -211,6 +230,10 @@ export default function EmbedAdminApp() {
   }
 
   const onUploadUrl = async () => {
+    if (isPortfolioAccount) {
+      toast.error('ポートフォリオアカウントではその機能は制限されています')
+      return
+    }
     if (!selectedTenant || !selectedKey) {
       toast.error('テナントを選択してください')
       return
@@ -245,6 +268,10 @@ export default function EmbedAdminApp() {
   }
 
   const onDelete = async (f: FileInfo) => {
+    if (isPortfolioAccount) {
+      toast.error('ポートフォリオアカウントではその機能は制限されています')
+      return
+    }
     if (!selectedTenant || !selectedKey) return
     if (!confirm(`削除しますか？\n${f.filename}`)) return
     try {
@@ -355,7 +382,17 @@ export default function EmbedAdminApp() {
     <div className="flex flex-col flex-1 min-h-0">
       <ScrollArea className="flex-1 min-h-0 p-4">
         <div className="space-y-4 max-w-5xl mx-auto">
-          {/* 新規キー生成（クライアント側） */}
+          {/* ポートフォリオアカウント用の注意表示 */}
+          {isPortfolioAccount && (
+            <Card className="p-4 bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+              <p className="text-sm text-blue-900 dark:text-blue-100">
+                ℹ️
+                ポートフォリオアカウントでログイン中です。レポート表示機能とチャットテストのみ利用できます。
+              </p>
+            </Card>
+          )}
+
+          {/* 新規キー生成 */}
           <Card className="p-4">
             <Collapsible open={openGenerate} onOpenChange={setOpenGenerate}>
               <CollapsibleTrigger asChild>
@@ -404,6 +441,7 @@ export default function EmbedAdminApp() {
               </CollapsibleContent>
             </Collapsible>
           </Card>
+
           {/* テナント選択（常時表示） */}
           <Card className="p-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
@@ -441,6 +479,8 @@ export default function EmbedAdminApp() {
               </div>
             </div>
           </Card>
+
+          {/* ファイル管理 */}
           <Card className="p-4">
             <div className="flex gap-2 items-end">
               <div className="flex-1">
@@ -668,7 +708,7 @@ export default function EmbedAdminApp() {
                 {(!!reportHtml || !!evidenceHtml) && (
                   <div className="md:col-span-2 p-3 border rounded">
                     <div className="font-medium mb-2">
-                      メール用HTMLプレビュー（統合版）
+                      メール用HTMLプレビュー
                     </div>
                     <div
                       className="border rounded p-3"

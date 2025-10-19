@@ -40,6 +40,33 @@ docker-compose up -d --build
 - **API 文書**: http://localhost:8000/docs（FastAPI Swagger）
 - **ヘルスチェック**: http://localhost:8000/health（バックエンド状態）
 
+## 認証とアクセス制御
+
+このポートフォリオプロジェクトでは、2種類のアカウントタイプが利用可能です。
+
+### 管理者アカウント（Google OAuth）
+
+- **ログイン方法**: Googleアカウント認証
+- **設定**: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `ADMIN_EMAILS` を環境変数に設定
+- **利用可能な機能**: すべての管理機能（フルアクセス）
+  - ファイルのアップロード・削除
+  - 埋め込みキーの管理
+  - レポートの表示
+  - チャット機能
+
+### ポートフォリオアカウント（クレデンシャル認証）
+
+- **ログイン方法**: ユーザー名/パスワード認証
+- **設定**: `PORTFOLIO_USERNAME`, `PORTFOLIO_PASSWORD` を環境変数に設定
+- **利用可能な機能**: 閲覧専用（制限付きアクセス）
+  - ✅ チャットテスト機能（`/chat-test`）
+  - ✅ レポート表示機能（`/embed-admin`）
+  - ❌ ファイルのアップロード・削除
+  - ❌ 埋め込みキーの管理・コピー
+  - ❌ その他の管理機能
+
+**ポートフォリオアカウントの用途**: 採用企業向けのデモアカウントとして、実際の機能を安全に体験できるように設計されています。制限された機能にアクセスしようとすると「ポートフォリオアカウントではその機能は制限されています」というトーストメッセージが表示されます。
+
 ## 使用方法（各フェーズの比較）
 
 ### フェーズ 1（Streamlit UI）
@@ -312,6 +339,22 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 
 # 新: 今後は本変数を参照（段階移行）
 NEXT_PUBLIC_API_BASE=http://localhost:8000
+
+# NextAuth認証設定
+AUTH_SECRET=your-auth-secret-32-characters-minimum
+NEXTAUTH_URL=http://localhost:3000
+
+# Google OAuth（管理者用ログイン）
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# 管理者用メールアドレス（カンマ区切りで複数指定可能）
+ADMIN_EMAILS=admin@example.com,admin2@example.com
+
+# ポートフォリオアカウント（採用企業向けデモアカウント）
+# chat-testとembed-adminのレポート表示機能のみ利用可能
+PORTFOLIO_USERNAME=portfolio
+PORTFOLIO_PASSWORD=your-secure-password-here
 
 # ===== LP Domain (placeholders) =====
 LP_MODEL=
