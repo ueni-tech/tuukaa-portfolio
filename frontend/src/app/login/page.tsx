@@ -4,15 +4,49 @@ import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Lock } from 'lucide-react'
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
+import { toast } from 'sonner'
 
 function LoginForm() {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/embed-admin'
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleGoogleSignIn = () => {
     signIn('google', { callbackUrl })
+  }
+
+  const handleCredentialSignIn = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!username || !password) {
+      toast.error('ユーザー名とパスワードを入力してください')
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      const result = await signIn('portfolio', {
+        username,
+        password,
+        redirect: false,
+      })
+
+      if (result?.error) {
+        toast.error('ログインに失敗しました。認証情報を確認してください。')
+      } else if (result?.ok) {
+        toast.success('ログインしました')
+        window.location.href = callbackUrl
+      }
+    } catch (error) {
+      toast.error('ログインエラーが発生しました')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -25,7 +59,50 @@ function LoginForm() {
           <p className="text-muted-foreground">Tuukaa ログイン</p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
+          {/* ポートフォリオアカウントログインフォーム */}
+          <form onSubmit={handleCredentialSignIn} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="username">ユーザー名</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="ユーザー名を入力"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">パスワード</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="パスワードを入力"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+            <Button
+              type="submit"
+              className="w-full h-12 text-base"
+              disabled={isLoading}
+            >
+              {isLoading
+                ? 'ログイン中...'
+                : 'ポートフォリオアカウントでログイン'}
+            </Button>
+          </form>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center"></div>
+          </div>
+
+          {/* Google ログイン */}
           <Button
             onClick={handleGoogleSignIn}
             className="w-full h-12 text-base"
@@ -50,13 +127,12 @@ function LoginForm() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Google でログイン
+            Google でログイン（管理者用）
           </Button>
         </div>
         <div className="mt-6 text-center text-sm text-muted-foreground">
-          <p>アクセスには管理者権限が必要です</p>
-          <p className="mt-2 text-xs">
-            許可された Google アカウントのみログインできます
+          <p className="text-xs">
+            ポートフォリオ閲覧用アカウントまたは管理者用Googleアカウントでログインしてください
           </p>
         </div>
       </Card>

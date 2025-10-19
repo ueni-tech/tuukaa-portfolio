@@ -22,6 +22,7 @@ import { Input } from '@/components/ui/input'
 import dynamic from 'next/dynamic'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
+import { useSession } from 'next-auth/react'
 const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: false })
 
 const unwrapMarkdownFence = (s: string) => {
@@ -65,6 +66,8 @@ interface Message {
 type TenantInfo = { name: string; key: string }
 
 export default function ChatPage() {
+  const { data: session } = useSession()
+  const isPortfolioAccount = session?.user?.role === 'portfolio'
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -257,6 +260,16 @@ export default function ChatPage() {
       {/* Chat Message */}
       <ScrollArea className="flex-1 min-h-0 p-4">
         <div className="space-y-4 max-w-5xl mx-auto">
+          {/* ポートフォリオアカウント用の注意表示 */}
+          {isPortfolioAccount && (
+            <Card className="p-4 bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+              <p className="text-sm text-blue-900 dark:text-blue-100">
+                ℹ️
+                ポートフォリオアカウントでログイン中です。レポート表示機能とチャットテストのみ利用できます。
+              </p>
+            </Card>
+          )}
+
           {messages.length === 0 && (
             <div className="text-center text-muted-foreground py-8">
               <Bot className="h-12 w-12 mx-auto mb-4 opacity-50" />

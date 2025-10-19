@@ -1,3 +1,19 @@
+## 📌 プロジェクト概要
+
+このプロジェクトは、RAG（検索拡張生成）技術を使用した文書検索・質問応答システムで、**転職活動用のポートフォリオ**として作成されました。
+
+### 主な特徴
+- ✅ **フルスタック開発**: Next.js + FastAPIによるモダンなWebアプリケーション
+- ✅ **AI機能**: LangChainとOpenAIを使用したRAGの実装
+- ✅ **セキュリティ**: 本番環境を想定したセキュリティ実装
+- ✅ **クラウドデプロイ**: Vercel、Fly.io、Dockerを使用したインフラ構築
+- ✅ **CI/CD**: GitHub Actionsによる自動デプロイパイプライン
+
+### デモアカウント（採用担当者向け）
+
+ポートフォリオアカウント（閲覧専用）を設定することで、採用担当者に安全にデモを提供できます。
+詳細は[docs/deploy_docs/PORTFOLIO_NOTES.md](docs/deploy_docs/PORTFOLIO_NOTES.md)を参照してください。
+
 ## クイックスタート
 
 ### 1. 環境設定
@@ -5,7 +21,7 @@
 ```bash
 # プロジェクトのクローン
 git clone <repository-url>
-cd tuukaa
+cd tuukaa-portfolio
 
 # 環境変数の設定（開発環境用の最小構成）
 cat > .env << EOF
@@ -18,11 +34,10 @@ EOF
 
 **⚠️ 本番環境の設定は必ず以下のドキュメントを参照してください:**
 
-- [セキュリティガイド](docs/SECURITY.md) - デプロイ前チェックリスト
-- [バックエンド環境変数テンプレート](docs/env.example) - バックエンドの環境変数設定
-- [フロントエンド環境変数テンプレート](docs/frontend.env.local.example) - フロントエンドの環境変数設定
-- [環境変数移行ガイド](docs/ENV_MIGRATION.md) - 既存の.env.example からの移行方法
-- [フロントエンド環境変数ガイド](docs/FRONTEND_ENV.md) - フロントエンド設定の詳細
+- [デプロイドキュメント](docs/deploy_docs/README.md) - デプロイ手順の全体像
+- [デプロイチェックリスト](docs/deploy_docs/DEPLOYMENT_CHECKLIST.md) - デプロイ前の確認事項
+- [セキュリティ設定](docs/deploy_docs/SECURITY_UPDATE.md) - セキュリティ設定の詳細
+- [ポートフォリオ用注意事項](docs/deploy_docs/PORTFOLIO_NOTES.md) - 転職活動用としての活用方法
 
 ### 2. サービス起動（Docker Compose）
 
@@ -39,6 +54,33 @@ docker-compose up -d --build
 - **メインアプリ**: http://localhost:3000（Next.js フロントエンド）
 - **API 文書**: http://localhost:8000/docs（FastAPI Swagger）
 - **ヘルスチェック**: http://localhost:8000/health（バックエンド状態）
+
+## 認証とアクセス制御
+
+このポートフォリオプロジェクトでは、2種類のアカウントタイプが利用可能です。
+
+### 管理者アカウント（Google OAuth）
+
+- **ログイン方法**: Googleアカウント認証
+- **設定**: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `ADMIN_EMAILS` を環境変数に設定
+- **利用可能な機能**: すべての管理機能（フルアクセス）
+  - ファイルのアップロード・削除
+  - 埋め込みキーの管理
+  - レポートの表示
+  - チャット機能
+
+### ポートフォリオアカウント（クレデンシャル認証）
+
+- **ログイン方法**: ユーザー名/パスワード認証
+- **設定**: `PORTFOLIO_USERNAME`, `PORTFOLIO_PASSWORD` を環境変数に設定
+- **利用可能な機能**: 閲覧専用（制限付きアクセス）
+  - ✅ チャットテスト機能（`/chat-test`）
+  - ✅ レポート表示機能（`/embed-admin`）
+  - ❌ ファイルのアップロード・削除
+  - ❌ 埋め込みキーの管理・コピー
+  - ❌ その他の管理機能
+
+**ポートフォリオアカウントの用途**: 採用企業向けのデモアカウントとして、実際の機能を安全に体験できるように設計されています。制限された機能にアクセスしようとすると「ポートフォリオアカウントではその機能は制限されています」というトーストメッセージが表示されます。
 
 ## 使用方法（各フェーズの比較）
 
@@ -231,27 +273,34 @@ const data = await response.json();
 
 ## デプロイメント
 
-### 開発環境
+### 開発環境（ローカル）
 
 ```bash
 docker-compose up --build
 ```
 
-### 本番環境（予定）
+### 本番環境（クラウドデプロイ）
 
-```bash
-# 本番ビルド
-docker-compose -f docker-compose.prod.yml up --build
+段階的にデプロイを進めることができます。詳細は[デプロイドキュメント](docs/deploy_docs/README.md)を参照してください。
 
-# または個別デプロイ
-# フロントエンド: Vercel
-# バックエンド: AWS/GCP
+**推奨デプロイパス**:
+1. [フェーズ0](docs/deploy_docs/deploy-phase-0.md): Vercelにフロントエンドを公開（10分）
+2. [フェーズ0.5](docs/deploy_docs/deploy-phase-0.5.md): Google認証のセットアップ（30分）
+3. [フェーズ1](docs/deploy_docs/deploy-phase-1.md): Fly.ioにバックエンドをデプロイ（30-60分）
+4. [フェーズ2](docs/deploy_docs/deploy-phase-2.md): 本番化とセキュリティ強化（30-45分）
+5. [フェーズ3](docs/deploy_docs/deploy-phase-3.md): Redis接続（20-40分）
+6. [フェーズ4](docs/deploy_docs/deploy-phase-4.md): CI/CD導入（30-60分）
+
+**最短デプロイ**（デモ環境）:
+```
+フェーズ0 → フェーズ0.5 → フェーズ1
+所要時間: 約1-2時間
 ```
 
 ## プロジェクト構造
 
 ```
-tuukaa/
+tuukaa-portfolio/
 ├── frontend/ # Next.jsフロントエンド
 │ ├── src/
 │ │ ├── app/ # App Router
@@ -312,6 +361,22 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 
 # 新: 今後は本変数を参照（段階移行）
 NEXT_PUBLIC_API_BASE=http://localhost:8000
+
+# NextAuth認証設定
+AUTH_SECRET=your-auth-secret-32-characters-minimum
+NEXTAUTH_URL=http://localhost:3000
+
+# Google OAuth（管理者用ログイン）
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# 管理者用メールアドレス（カンマ区切りで複数指定可能）
+ADMIN_EMAILS=admin@example.com,admin2@example.com
+
+# ポートフォリオアカウント（採用企業向けデモアカウント）
+# chat-testとembed-adminのレポート表示機能のみ利用可能
+PORTFOLIO_USERNAME=portfolio
+PORTFOLIO_PASSWORD=your-secure-password-here
 
 # ===== LP Domain (placeholders) =====
 LP_MODEL=

@@ -65,9 +65,20 @@ export default function GlobalHeader() {
           </Link>
           {isLoggedIn && (
             <>
-              <span className="text-sm text-muted-foreground">
-                {session?.user?.name}
-              </span>
+              <div className="flex flex-col items-end">
+                <span className="text-sm text-muted-foreground">
+                  {session?.user?.name}
+                </span>
+                {session?.user?.role && (
+                  <span className="text-xs text-muted-foreground">
+                    (
+                    {session.user.role === 'portfolio'
+                      ? 'ポートフォリオ'
+                      : '管理者'}
+                    )
+                  </span>
+                )}
+              </div>
               <Button
                 variant="ghost"
                 size="sm"
