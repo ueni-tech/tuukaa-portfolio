@@ -1,3 +1,19 @@
+## 📌 プロジェクト概要
+
+このプロジェクトは、RAG（検索拡張生成）技術を使用した文書検索・質問応答システムで、**転職活動用のポートフォリオ**として作成されました。
+
+### 主な特徴
+- ✅ **フルスタック開発**: Next.js + FastAPIによるモダンなWebアプリケーション
+- ✅ **AI機能**: LangChainとOpenAIを使用したRAGの実装
+- ✅ **セキュリティ**: 本番環境を想定したセキュリティ実装
+- ✅ **クラウドデプロイ**: Vercel、Fly.io、Dockerを使用したインフラ構築
+- ✅ **CI/CD**: GitHub Actionsによる自動デプロイパイプライン
+
+### デモアカウント（採用担当者向け）
+
+ポートフォリオアカウント（閲覧専用）を設定することで、採用担当者に安全にデモを提供できます。
+詳細は[docs/deploy_docs/PORTFOLIO_NOTES.md](docs/deploy_docs/PORTFOLIO_NOTES.md)を参照してください。
+
 ## クイックスタート
 
 ### 1. 環境設定
@@ -5,7 +21,7 @@
 ```bash
 # プロジェクトのクローン
 git clone <repository-url>
-cd tuukaa
+cd tuukaa-portfolio
 
 # 環境変数の設定（開発環境用の最小構成）
 cat > .env << EOF
@@ -18,11 +34,10 @@ EOF
 
 **⚠️ 本番環境の設定は必ず以下のドキュメントを参照してください:**
 
-- [セキュリティガイド](docs/SECURITY.md) - デプロイ前チェックリスト
-- [バックエンド環境変数テンプレート](docs/env.example) - バックエンドの環境変数設定
-- [フロントエンド環境変数テンプレート](docs/frontend.env.local.example) - フロントエンドの環境変数設定
-- [環境変数移行ガイド](docs/ENV_MIGRATION.md) - 既存の.env.example からの移行方法
-- [フロントエンド環境変数ガイド](docs/FRONTEND_ENV.md) - フロントエンド設定の詳細
+- [デプロイドキュメント](docs/deploy_docs/README.md) - デプロイ手順の全体像
+- [デプロイチェックリスト](docs/deploy_docs/DEPLOYMENT_CHECKLIST.md) - デプロイ前の確認事項
+- [セキュリティ設定](docs/deploy_docs/SECURITY_UPDATE.md) - セキュリティ設定の詳細
+- [ポートフォリオ用注意事項](docs/deploy_docs/PORTFOLIO_NOTES.md) - 転職活動用としての活用方法
 
 ### 2. サービス起動（Docker Compose）
 
@@ -258,27 +273,34 @@ const data = await response.json();
 
 ## デプロイメント
 
-### 開発環境
+### 開発環境（ローカル）
 
 ```bash
 docker-compose up --build
 ```
 
-### 本番環境（予定）
+### 本番環境（クラウドデプロイ）
 
-```bash
-# 本番ビルド
-docker-compose -f docker-compose.prod.yml up --build
+段階的にデプロイを進めることができます。詳細は[デプロイドキュメント](docs/deploy_docs/README.md)を参照してください。
 
-# または個別デプロイ
-# フロントエンド: Vercel
-# バックエンド: AWS/GCP
+**推奨デプロイパス**:
+1. [フェーズ0](docs/deploy_docs/deploy-phase-0.md): Vercelにフロントエンドを公開（10分）
+2. [フェーズ0.5](docs/deploy_docs/deploy-phase-0.5.md): Google認証のセットアップ（30分）
+3. [フェーズ1](docs/deploy_docs/deploy-phase-1.md): Fly.ioにバックエンドをデプロイ（30-60分）
+4. [フェーズ2](docs/deploy_docs/deploy-phase-2.md): 本番化とセキュリティ強化（30-45分）
+5. [フェーズ3](docs/deploy_docs/deploy-phase-3.md): Redis接続（20-40分）
+6. [フェーズ4](docs/deploy_docs/deploy-phase-4.md): CI/CD導入（30-60分）
+
+**最短デプロイ**（デモ環境）:
+```
+フェーズ0 → フェーズ0.5 → フェーズ1
+所要時間: 約1-2時間
 ```
 
 ## プロジェクト構造
 
 ```
-tuukaa/
+tuukaa-portfolio/
 ├── frontend/ # Next.jsフロントエンド
 │ ├── src/
 │ │ ├── app/ # App Router
