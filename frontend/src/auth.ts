@@ -44,8 +44,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   pages: {
-    signIn: '/login',
+    signIn: '/login', // デフォルトは管理者用ログイン（Google OAuth）
     error: '/auth/error',
+    // ポートフォリオアカウントは /portfolio-login から直接ログイン
   },
   callbacks: {
     async signIn({ user, account }) {
@@ -74,6 +75,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         nextUrl.pathname === '/' ||
         nextUrl.pathname.startsWith('/embed-admin') ||
         nextUrl.pathname.startsWith('/chat-test')
+
+      // ログインページとポートフォリオログインページは常にアクセス可能
+      if (
+        nextUrl.pathname === '/login' ||
+        nextUrl.pathname === '/portfolio-login'
+      ) {
+        return true
+      }
 
       if (isOnProtectedPage) {
         if (isLoggedIn) return true
