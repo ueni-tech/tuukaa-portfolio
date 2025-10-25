@@ -58,12 +58,12 @@ AIチャットボット
 
 ### 🌐 ポートフォリオ用デモサイト  
 - **サービス管理画面（デモアカウントでログイン）**
-  - [https://tuukaa-portfolio.vercel.app/portfolio-login](https://tuukaa-portfolio.vercel.app/portfolio-login){:target="_blank"}
+  - [https://tuukaa-portfolio.vercel.app/portfolio-login](https://tuukaa-portfolio.vercel.app/portfolio-login)
   - ログインするとデモアカウントでサービス管理者用の管理画面に遷移し、チャット機能・レポート機能がお試しいただけます
   - 認証情報は別途共有いたします
 
 - **顧客企業向けチャットテストページ**
-  - [https://tuukaa-portfolio.vercel.app/widget-test?key=demo123](https://tuukaa-portfolio.vercel.app/widget-test?key=demo123){:target="_blank"}
+  - [https://tuukaa-portfolio.vercel.app/widget-test?key=demo123](https://tuukaa-portfolio.vercel.app/widget-test?key=demo123)
   - こちらは顧客企業向けに配布・公開するページのデモです。ここでは実際のウィジェットを使ったチャットテストをしていただけます
 
 ### 💬 デモデータと質問例
