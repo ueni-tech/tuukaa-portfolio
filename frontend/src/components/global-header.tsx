@@ -27,6 +27,7 @@ export default function GlobalHeader() {
 
   if (
     pathname === '/login' ||
+    pathname === '/portfolio-login' ||
     pathname === '/widget-test' ||
     pathname === '/auth/error'
   ) {
