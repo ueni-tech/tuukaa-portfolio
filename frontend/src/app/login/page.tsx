@@ -1,6 +1,6 @@
 'use client'
 
-import { signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -9,12 +9,20 @@ import Link from 'next/link'
 import { Suspense, useEffect, useState } from 'react'
 
 function LoginForm() {
+  const { data: session, status } = useSession()
   const searchParams = useSearchParams()
   const router = useRouter()
   const callbackUrl = searchParams.get('callbackUrl') || '/embed-admin'
   const accessKey = searchParams.get('key')
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [isChecking, setIsChecking] = useState(true)
+
+  // ログイン済みの場合はリダイレクト
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user) {
+      router.push(callbackUrl)
+    }
+  }, [status, session, router, callbackUrl])
 
   useEffect(() => {
     // アクセスキーの検証
@@ -47,8 +55,8 @@ function LoginForm() {
     signIn('google', { callbackUrl })
   }
 
-  // 検証中
-  if (isChecking) {
+  // 認証状態チェック中またはログイン済みの場合はローディング表示
+  if (status === 'loading' || status === 'authenticated' || isChecking) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-gray-100"></div>

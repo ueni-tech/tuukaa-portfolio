@@ -1,21 +1,30 @@
 'use client'
 
-import { signIn } from 'next-auth/react'
-import { useSearchParams } from 'next/navigation'
+import { signIn, useSession } from 'next-auth/react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Lock } from 'lucide-react'
-import { Suspense, useState } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { toast } from 'sonner'
 
 function PortfolioLoginForm() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/embed-admin'
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+
+  // ログイン済みの場合はリダイレクト
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user) {
+      router.push(callbackUrl)
+    }
+  }, [status, session, router, callbackUrl])
 
   const handleCredentialSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,6 +52,24 @@ function PortfolioLoginForm() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  // 認証状態をチェック中はローディング表示
+  if (status === 'loading') {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
+
+  // ログイン済みの場合は何も表示しない（リダイレクト中）
+  if (status === 'authenticated') {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    )
   }
 
   return (
