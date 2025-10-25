@@ -1,54 +1,98 @@
 'use client'
 
 import { signIn } from 'next-auth/react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Lock } from 'lucide-react'
-import { Suspense, useState } from 'react'
-import { toast } from 'sonner'
+import { Lock, ShieldAlert } from 'lucide-react'
+import Link from 'next/link'
+import { Suspense, useEffect, useState } from 'react'
 
 function LoginForm() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const callbackUrl = searchParams.get('callbackUrl') || '/embed-admin'
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const accessKey = searchParams.get('key')
+  const [isAuthorized, setIsAuthorized] = useState(false)
+  const [isChecking, setIsChecking] = useState(true)
+
+  useEffect(() => {
+    // アクセスキーの検証
+    const checkAccess = async () => {
+      try {
+        const response = await fetch('/api/verify-admin-access', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: accessKey }),
+        })
+
+        if (response.ok) {
+          setIsAuthorized(true)
+        } else {
+          setIsAuthorized(false)
+        }
+      } catch (error) {
+        setIsAuthorized(false)
+      } finally {
+        setIsChecking(false)
+      }
+    }
+
+    checkAccess()
+  }, [accessKey])
 
   const handleGoogleSignIn = () => {
     signIn('google', { callbackUrl })
   }
 
-  const handleCredentialSignIn = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!username || !password) {
-      toast.error('ユーザー名とパスワードを入力してください')
-      return
-    }
-
-    setIsLoading(true)
-    try {
-      const result = await signIn('portfolio', {
-        username,
-        password,
-        redirect: false,
-      })
-
-      if (result?.error) {
-        toast.error('ログインに失敗しました。認証情報を確認してください。')
-      } else if (result?.ok) {
-        toast.success('ログインしました')
-        window.location.href = callbackUrl
-      }
-    } catch (error) {
-      toast.error('ログインエラーが発生しました')
-    } finally {
-      setIsLoading(false)
-    }
+  // 検証中
+  if (isChecking) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-gray-100"></div>
+      </div>
+    )
   }
 
+  // アクセス拒否
+  if (!isAuthorized) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4">
+        <Card className="w-full max-w-md p-8 shadow-xl">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full mb-4">
+              <ShieldAlert className="w-8 h-8 text-red-600 dark:text-red-400" />
+            </div>
+            <h1 className="text-2xl font-bold mb-2 text-red-600 dark:text-red-400">
+              アクセス制限
+            </h1>
+            <p className="text-muted-foreground text-sm">
+              このページへのアクセスは制限されています
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <p className="text-sm text-muted-foreground">
+                管理者ログインページへのアクセスには、専用のURLが必要です。
+              </p>
+            </div>
+
+            <div className="text-center">
+              <Link
+                href="/portfolio-login"
+                className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+              >
+                ポートフォリオ閲覧用アカウントでログイン
+              </Link>
+            </div>
+          </div>
+        </Card>
+      </div>
+    )
+  }
+
+  // アクセス許可済み - 通常のログインフォーム
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4">
       <Card className="w-full max-w-md p-8 shadow-xl">
@@ -56,57 +100,15 @@ function LoginForm() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
             <Lock className="w-8 h-8 text-primary" />
           </div>
-          <p className="text-muted-foreground">Tuukaa ログイン</p>
+          <h1 className="text-2xl font-bold mb-2">管理者ログイン</h1>
+          <p className="text-muted-foreground text-sm">Tuukaa 管理画面</p>
         </div>
 
         <div className="space-y-6">
-          {/* ポートフォリオアカウントログインフォーム */}
-          <form onSubmit={handleCredentialSignIn} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="username">ユーザー名</Label>
-              <Input
-                id="username"
-                type="text"
-                placeholder="ユーザー名を入力"
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-                disabled={isLoading}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">パスワード</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="パスワードを入力"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                disabled={isLoading}
-              />
-            </div>
-            <Button
-              type="submit"
-              className="w-full h-12 text-base"
-              disabled={isLoading}
-            >
-              {isLoading
-                ? 'ログイン中...'
-                : 'ポートフォリオアカウントでログイン'}
-            </Button>
-          </form>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center"></div>
-          </div>
-
           {/* Google ログイン */}
           <Button
             onClick={handleGoogleSignIn}
             className="w-full h-12 text-base"
-            variant="outline"
             size="lg"
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -127,13 +129,8 @@ function LoginForm() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Google でログイン（管理者用）
+            Google でログイン
           </Button>
-        </div>
-        <div className="mt-6 text-center text-sm text-muted-foreground">
-          <p className="text-xs">
-            ポートフォリオ閲覧用アカウントまたは管理者用Googleアカウントでログインしてください
-          </p>
         </div>
       </Card>
     </div>

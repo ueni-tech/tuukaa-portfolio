@@ -277,7 +277,7 @@ export default function ChatPage() {
                 Welcome to Tuukaa the RAG Chatbot
               </p>
               <p>
-                Upload a PDF document and start asking questions about its
+                Upload a your documents and start asking questions about its
                 content.
               </p>
               {config.isDebug && (
