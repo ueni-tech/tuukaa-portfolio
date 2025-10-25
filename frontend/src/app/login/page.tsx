@@ -27,11 +27,13 @@ function LoginForm() {
         })
 
         if (response.ok) {
-          setIsAuthorized(true)
+          const data = await response.json()
+          setIsAuthorized(data.authorized === true)
         } else {
           setIsAuthorized(false)
         }
       } catch (error) {
+        console.error('Access verification failed:', error)
         setIsAuthorized(false)
       } finally {
         setIsChecking(false)
