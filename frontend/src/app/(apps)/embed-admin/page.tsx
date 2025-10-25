@@ -407,7 +407,7 @@ export default function EmbedAdminApp() {
                   <p className="text-xs text-muted-foreground mb-3">
                     以下のような質問をチャットテストページでお試しください：
                   </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs mb-4">
                     <div className="space-y-1">
                       <p className="text-blue-700 dark:text-blue-300">
                         • 「Apple Intelligenceとは何ですか？」
@@ -436,6 +436,23 @@ export default function EmbedAdminApp() {
                         • 「有効にする方法は？」
                       </p>
                     </div>
+                  </div>
+                  <div className="pt-3 border-t border-blue-200 dark:border-blue-800">
+                    <p className="text-xs text-muted-foreground mb-2">
+                      <strong>顧客企業向けチャットウィジェットのデモ:</strong>
+                    </p>
+                    <a
+                      href="https://tuukaa-portfolio.vercel.app/widget-test?key=demo123"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+                    >
+                      <span>🔗</span>
+                      実際のウィジェットを試す（新しいタブで開く）
+                    </a>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      顧客企業向けに配布・公開するページのデモです
+                    </p>
                   </div>
                 </div>
               </div>
