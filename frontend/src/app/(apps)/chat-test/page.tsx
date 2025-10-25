@@ -262,11 +262,61 @@ export default function ChatPage() {
         <div className="space-y-4 max-w-5xl mx-auto">
           {/* ポートフォリオアカウント用の注意表示 */}
           {isPortfolioAccount && (
-            <Card className="p-4 bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
-              <p className="text-sm text-blue-900 dark:text-blue-100">
-                ℹ️
-                ポートフォリオアカウントでログイン中です。レポート表示機能とチャットテストのみ利用できます。
-              </p>
+            <Card className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-blue-200 dark:border-blue-800">
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="text-2xl">💬</div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                      チャットテストページ - ポートフォリオアカウント
+                    </h3>
+                    <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
+                      このページでは、実際のAIチャットボット機能をお試しいただけます。
+                      デモデータに対して自由に質問してみてください。
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-white dark:bg-gray-900 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+                  <h4 className="font-semibold text-sm text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
+                    <span>🍎</span>
+                    デモデータ: Apple Intelligence公式ドキュメント
+                  </h4>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    以下のような質問を試してみてください：
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                    <div className="space-y-1">
+                      <p className="text-blue-700 dark:text-blue-300">
+                        • 「Apple Intelligenceとは何ですか？」
+                      </p>
+                      <p className="text-blue-700 dark:text-blue-300">
+                        • 「Writing Toolsの機能を教えて」
+                      </p>
+                      <p className="text-blue-700 dark:text-blue-300">
+                        • 「どのデバイス・OSで使えますか？」
+                      </p>
+                      <p className="text-blue-700 dark:text-blue-300">
+                        • 「対応言語は何ですか？」
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-blue-700 dark:text-blue-300">
+                        • 「Siriの新機能は何ですか？」
+                      </p>
+                      <p className="text-blue-700 dark:text-blue-300">
+                        • 「画像生成機能について説明して」
+                      </p>
+                      <p className="text-blue-700 dark:text-blue-300">
+                        • 「プライバシーはどう保護されていますか？」
+                      </p>
+                      <p className="text-blue-700 dark:text-blue-300">
+                        • 「有効にする方法は？」
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </Card>
           )}
 
