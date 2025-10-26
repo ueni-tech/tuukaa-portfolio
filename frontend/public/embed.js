@@ -302,6 +302,36 @@
       box-shadow: 0 4px 12px rgba(74, 85, 104, 0.2);
     }
 
+    .feedback-wrap {
+      display:flex;
+      gap:8px;
+      align-items:center
+    }
+
+    .feedback-buttons {
+      display:flex;
+      gap:8px;
+      align-items:center
+    }
+
+    .retry-btn {
+      cursor: pointer;
+    }
+
+    .feedback-buttons .retry-btn {
+      all: unset;
+      font-size: 10px;
+      background-color: #4a5568;
+      color: #fff;
+      padding: 4px 6px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .feedback-buttons .retry-btn:hover {
+      opacity: 0.8
+    }
+
     .typing {
       font-size: 13px;
       color: #718096;
@@ -549,6 +579,12 @@
         margin: auto;
         padding: 4px 8px;
         letter-spacing: 0.8em;
+      }
+
+      .feedback-wrap {
+        flex-direction: column;
+        gap:4px;
+        align-items: flex-start
       }
     }
 
@@ -916,10 +952,12 @@
       const wrap = document.createElement('div')
       wrap.style.marginTop = '8px'
       wrap.innerHTML = `
-        <div style="display:flex;gap:8px;align-items:center">
+        <div class="feedback-wrap">
           <span style="font-size:12px;color:#718096">この回答は役に立ちましたか？</span>
-          <button class="retry-btn">はい</button>
-          <button class="retry-btn" style="background:#6b7280">いいえ</button>
+          <div class="feedback-buttons">
+            <button class="retry-btn">はい</button>
+            <button class="retry-btn">いいえ</button>
+          </div>
         </div>`
       const [yesBtn, noBtn] = wrap.querySelectorAll('button')
       const isTestEnv = host.getAttribute('data-is-test') === 'true'
