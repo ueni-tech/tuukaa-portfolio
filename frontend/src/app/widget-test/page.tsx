@@ -112,11 +112,12 @@ function WidgetTestContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
-        <Card className="p-8 mb-8">
+        <Card className="p-4 mb-4 gap-2 sm:p-8 sm:mb-8 sm:gap-4">
           <div className="flex items-center gap-3 mb-1">
             <svg
+              className="hidden sm:block"
               xmlns="http://www.w3.org/2000/svg"
               width="45"
               height="45"
@@ -134,21 +135,42 @@ function WidgetTestContent() {
               <path d="M15 13v2"></path>
               <path d="M9 13v2"></path>
             </svg>
-            <h1 className="text-3xl font-bold">AIチャット テストページ</h1>
+            <svg
+              className="sm:hidden"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 8V4H8"></path>
+              <rect width="16" height="12" x="4" y="8" rx="2"></rect>
+              <path d="M2 14h2"></path>
+              <path d="M20 14h2"></path>
+              <path d="M15 13v2"></path>
+              <path d="M9 13v2"></path>
+            </svg>
+            <h1 className="text-lg font-bold sm:text-3xl">
+              AIチャットテストページ
+            </h1>
           </div>
           <p className="text-gray-600 dark:text-gray-400">
             このページでは実際のウィジェットでチャットテストを行っていただくことができます
           </p>
         </Card>
 
-        <Card className="p-8 mb-8">
-          <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
-            <span className="text-2xl">✨</span>
+        <Card className="p-4 mb-4 gap-2 sm:p-8 sm:mb-8 sm:gap-4">
+          <h2 className="text-lg font-semibold mb-2 flex items-center gap-2 sm:text-2xl sm:mb-6">
+            <span className="text-lg sm:text-2xl">✨</span>
             使い方
           </h2>
-          <ol className="space-y-4">
+          <ol className="space-y-2 sm:space-y-4">
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
+              <span className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
                 1
               </span>
               <div className="flex-1">
@@ -182,7 +204,7 @@ function WidgetTestContent() {
               </div>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
+              <span className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
                 2
               </span>
               <div className="flex-1">
@@ -195,7 +217,7 @@ function WidgetTestContent() {
               </div>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
+              <span className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
                 3
               </span>
               <div className="flex-1">
@@ -210,47 +232,47 @@ function WidgetTestContent() {
           </ol>
         </Card>
 
-        <Card className="p-8">
-          <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
-            <span className="text-2xl">💻</span>
+        <Card className="p-4 gap-2 sm:p-8 sm:gap-4">
+          <h2 className="text-lg sm:text-2xl font-semibold mb-1 sm:mb-6 flex items-center gap-2">
+            <span className="text-lg sm:text-2xl">💻</span>
             あなたのサイトへの埋め込みコード
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-sm sm:text-md text-gray-600 dark:text-gray-400 mb-4">
             以下のコードをあなたのウェブサイトの{' '}
             <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
               &lt;body&gt;
             </code>{' '}
             タグ内に貼り付けるだけで、 同じウィジェットが表示されます：
           </p>
-          <div className="bg-gray-900 dark:bg-gray-950 rounded-lg p-6 overflow-x-auto relative">
-            <pre className="text-gray-100 dark:text-gray-200 text-sm font-mono">
-              {origin
-                ? `<script 
+          <div className="relative">
+            <div className="bg-gray-900 dark:bg-gray-950 rounded-lg p-6 overflow-x-auto">
+              <pre className="text-gray-100 dark:text-gray-200 text-sm font-mono">
+                {origin
+                  ? `<script 
   src="${origin}/embed.js"
   data-embed-key="${embedKey}"
   data-api-base="${apiBaseUrl}"
 ></script>
 `
-                : '読み込み中...'}
-            </pre>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute top-4 right-4 bg-white hover:bg-gray-200 dark:text-gray-950 dark:hover:bg-gray-200"
-              onClick={handleCopyCode}
-            >
-              {copied ? (
-                <>
-                  <Check className="h-4 w-4 mr-2" />
-                  コピー済み
-                </>
-              ) : (
-                <>
-                  <Copy className="h-4 w-4 mr-2" />
-                  コードをコピー
-                </>
-              )}
-            </Button>
+                  : '読み込み中...'}
+              </pre>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute top-4 right-4 bg-white hover:bg-gray-200 dark:text-gray-950 dark:hover:bg-gray-200"
+                onClick={handleCopyCode}
+              >
+                {copied ? (
+                  <>
+                    <Check className="h-4 w-4" />
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </Card>
       </div>

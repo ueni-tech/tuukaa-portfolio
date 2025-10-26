@@ -68,6 +68,7 @@ type TenantInfo = { name: string; key: string }
 export default function ChatPage() {
   const { data: session } = useSession()
   const isPortfolioAccount = session?.user?.role === 'portfolio'
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -320,7 +321,7 @@ export default function ChatPage() {
                       <strong>顧客企業向けチャットウィジェットのデモ:</strong>
                     </p>
                     <a
-                      href="https://tuukaa-portfolio.vercel.app/widget-test?key=demo123"
+                      href={`${appUrl}/widget-test?key=demo123`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
