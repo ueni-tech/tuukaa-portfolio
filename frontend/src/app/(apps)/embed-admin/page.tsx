@@ -48,6 +48,7 @@ type FileInfo = {
 export default function EmbedAdminApp() {
   const { data: session } = useSession()
   const isPortfolioAccount = session?.user?.role === 'portfolio'
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
   const [tenants, setTenants] = useState<TenantInfo[]>([])
   const [selectedTenant, setSelectedTenant] = useState<string>('')
   const [selectedKey, setSelectedKey] = useState<string>('')
@@ -442,7 +443,7 @@ export default function EmbedAdminApp() {
                       <strong>顧客企業向けチャットウィジェットのデモ:</strong>
                     </p>
                     <a
-                      href="https://tuukaa-portfolio.vercel.app/widget-test?key=demo123"
+                      href={`${appUrl}/widget-test?key=demo123`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
