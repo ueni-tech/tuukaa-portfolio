@@ -7,7 +7,7 @@
 
 ## 📌 プロジェクト概要
 
-このプロジェクトは、**RAG（Retrieval-Augmented Generation）技術を活用した埋め込み型AIチャットボットサービス**です。
+このプロジェクトは、**RAG（Retrieval-Augmented Generation）技術を活用した埋め込み型AIチャットボットのSaaS型サービス**です。
 
 ### サービスの仕組み
 
