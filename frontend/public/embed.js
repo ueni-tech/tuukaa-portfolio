@@ -710,7 +710,7 @@
       </div>
       <div class="foot">
         <div class="input-wrap">
-          <textarea placeholder="ご質問をお聞かせください...&#10;Shift+Enterで改行"></textarea>
+          <textarea placeholder="ご質問をお聞かせください...&#10;Shift+Enterで送信"></textarea>
         </div>
         <button>送信</button>
       </div>
@@ -1196,7 +1196,7 @@
     })
 
     textarea.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
+      if (e.key === 'Enter' && e.shiftKey) {
         e.preventDefault()
         e.stopPropagation()
         sendBtn.click()
