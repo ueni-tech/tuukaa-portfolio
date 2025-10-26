@@ -218,7 +218,7 @@
       border: none;
       padding: 12px 16px;
       font: inherit;
-      font-size: 14px;
+      font-size: 16px;
       color: #2d3748;
       background: transparent;
       outline: none;
@@ -503,8 +503,7 @@
         bottom: 16px;
         width: 90%;
         height: 500px;
-        left: 50%;
-        transform: translateX(-50%);
+        left: 5%;
       }
 
       .toggle {
@@ -533,6 +532,13 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
+      }
+
+      .foot textarea {
+        padding: 10px 14px;
+        font-size: 16px;
+        height: 66px;
+        padding-right: 18px;
       }
 
       .foot button {
